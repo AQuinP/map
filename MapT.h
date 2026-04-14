@@ -25,6 +25,7 @@ public:
     void Rehash(int numBuckets);
 
     T operator[](K key);
+    MapT& operator=(MapT const &other);
 
     int Size() { return numKeys; }
 
@@ -32,7 +33,12 @@ public:
     pair<K,T> GetNextPair();
 
 private:
+    // struct KeyVal {
+    //     K key;
+    //     T value;
+    // };
     forward_list<pair<K,T>>* buckets;   // Each node contains a key and value
+    //forward_list<KeyVal>* buckets;
     int numBuckets;
     int numKeys;
 
