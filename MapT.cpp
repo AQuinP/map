@@ -21,6 +21,14 @@ MapT<K, T>::MapT() {
 }
 
 template<class K, class T>
+MapT<K, T>::MapT(int numBuckets) {
+    this->numBuckets = numBuckets;
+    buckets = new forward_list<pair<K, T>>[DEFAULT_BUCKETS];
+    numKeys = 0;
+    maxLoad = DEFAULT_LOAD;
+}
+
+template<class K, class T>
 void MapT<K, T>::Add(K key, T value) {
 
     Remove(key);
@@ -55,7 +63,7 @@ void MapT<K, T>::Remove(K key) {
     int bucket = GetHashIndex(key);
 
     //Search the bucket to see if the key exists
-    for (auto it = buckets[bucket].begin; it != buckets[bucket].end(); ++it) {
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
         if (it->first == key) { //Does the key exist?
             //*it is the pair we are removing
             buckets[bucket].remove(*it);
@@ -82,7 +90,7 @@ template<class K, class T>
 T MapT<K, T>::operator[](K key) {
     int bucket = GetHashIndex(key);
 
-    for (auto it = buckets[bucket].begin; it != buckets[bucket].end(); ++it) {
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
         if (it->first == key) { //Does the key exist?
             return it->second;
         }
@@ -144,7 +152,15 @@ template<class K, class T>
 pair<K,T> MapT<K, T>::GetNextPair() {
     pair<K,T> currVal;
 
+    //BEFORE we try to get a value
+    //Check for first bucket that actually has something
+    while (mapIter == buckets[currBucket].end()) {
+        ++currBucket;
+        mapIter = buckets[currBucket].begin();
+    }
 
+    currVal = *mapIter;
+    ++mapIter;
 
     return currVal;
 }

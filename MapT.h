@@ -10,11 +10,13 @@
 using namespace std;
 
 class KeyDoesNotExist {};
+class OutOfBounds{};
 
 template<class K, class T>
 class MapT {
 public:
     MapT();
+    explicit MapT(int numBuckets);
 
     void Add(K key, T value);
     void Remove(K key);
